@@ -1,0 +1,25 @@
+incident_timeline_extractor:
+  default_time_range_hours: 2
+  sources:
+    journald:
+      enabled: true
+      file: "./examples/logs/journald_export.txt"
+    nginx:
+      enabled: true
+      access_log: "./examples/logs/nginx_access.log"
+      error_log: "./examples/logs/nginx_error.log"
+    syslog:
+      enabled: true
+      files:
+        - "./examples/logs/syslog.log"
+    zabbix:
+      enabled: true
+      mode: "file"
+      file: "./examples/logs/zabbix_events.json"
+    prometheus:
+      enabled: true
+      file: "./examples/logs/prometheus_alerts.json"
+
+ai:
+  provider: "mock"
+  model: "mock"

@@ -1,0 +1,2 @@
+2025-11-19T08:12:20Z nginx.service[111]: worker process 10 exited unexpectedly
+2025-11-19T08:12:40Z php-fpm.service[222]: pool www reached max children

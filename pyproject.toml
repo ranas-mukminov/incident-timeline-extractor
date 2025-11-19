@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "incident-timeline-extractor"
+version = "0.1.0"
+description = "Incident timeline extractor and AI-assisted postmortem generator"
+authors = [{ name = "run-as-daemon", email = "contact@run-as-daemon.ru" }]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "typer>=0.9",
+    "Jinja2>=3.1",
+    "PyYAML>=6.0",
+    "rich>=13.0",
+    "python-dateutil>=2.8",
+]
+
+[project.optional-dependencies]
+pdf = ["weasyprint>=60"]
+openai = ["openai>=1.0"]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.6",
+    "black>=23.12",
+    "isort>=5.12",
+    "mypy>=1.6",
+    "pip-audit>=2.6",
+    "bandit>=1.7",
+]
+
+[project.scripts]
+incident-timeline = "incident_timeline_extractor.cli:app"
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = false
+ignore_missing_imports = true
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

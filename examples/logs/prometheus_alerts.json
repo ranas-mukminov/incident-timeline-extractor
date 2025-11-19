@@ -1,0 +1,16 @@
+{
+  "alerts": [
+    {
+      "status": "firing",
+      "labels": {"alertname": "HighErrorRate", "severity": "critical", "instance": "web-1", "job": "frontend"},
+      "annotations": {"summary": "HTTP 5xx spiked"},
+      "startsAt": "2025-11-19T08:12:15Z"
+    },
+    {
+      "status": "resolved",
+      "labels": {"alertname": "HighErrorRate", "severity": "info", "instance": "web-1", "job": "frontend"},
+      "annotations": {"summary": "HTTP errors recovered"},
+      "startsAt": "2025-11-19T08:13:30Z"
+    }
+  ]
+}

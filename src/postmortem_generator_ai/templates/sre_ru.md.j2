@@ -1,0 +1,33 @@
+# {{ pm.title }}
+
+- ID инцидента: {{ pm.incident_id }}
+- Дата: {{ pm.date.isoformat() }}
+- Серьезность: {{ pm.severity }}
+
+## Резюме
+{{ pm.summary }}
+
+## Влияние
+{{ pm.impact }}
+
+## Корневая причина
+{{ pm.root_cause }}
+
+## Сопутствующие факторы
+{{ pm.contributing_factors }}
+
+## Таймлайн
+{{ pm.timeline_md }}
+
+## Что сработало хорошо
+{{ pm.what_went_well }}
+
+## Что улучшить
+{{ pm.what_can_be_improved }}
+
+## План действий
+{% for item in pm.action_items %}- [{{ "x" if item.status == "done" else " " }}] {{ item.description }} (ответственный: {{ item.owner or "tbd" }}, срок: {{ item.due_date or "tbd" }})
+{% endfor %}
+
+## Уроки
+{{ pm.lessons_learned }}

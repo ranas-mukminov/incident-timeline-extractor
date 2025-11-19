@@ -1,0 +1,20 @@
+{
+  "events": [
+    {
+      "eventid": "9001",
+      "clock": 1763539945,
+      "name": "DB latency high",
+      "severity": 3,
+      "hosts": [{"host": "db-1"}],
+      "status": "PROBLEM"
+    },
+    {
+      "eventid": "9002",
+      "clock": 1763540045,
+      "name": "DB latency recovered",
+      "severity": 1,
+      "hosts": [{"host": "db-1"}],
+      "status": "RESOLVED"
+    }
+  ]
+}

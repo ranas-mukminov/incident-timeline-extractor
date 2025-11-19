@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "incident_id": "INC-EXAMPLE",
+  "started_at": "2025-11-19T08:12:01+00:00",
+  "ended_at": "2025-11-19T08:13:30+00:00",
+  "events": [
+    {
+      "id": "nginx-access-0000",
+      "timestamp": "2025-11-19T08:12:01+00:00",
+      "source": "nginx",
+      "host": "web-1",
+      "service": "frontend",
+      "severity": "error",
+      "category": "web",
+      "message": "502 GET /",
+      "tags": ["http_5xx"],
+      "correlation_id": "corr-1",
+      "raw": {"status": 502, "method": "GET", "path": "/"}
+    },
+    {
+      "id": "prometheus-0000",
+      "timestamp": "2025-11-19T08:12:15+00:00",
+      "source": "prometheus",
+      "host": "web-1",
+      "service": "frontend",
+      "severity": "critical",
+      "category": "alert",
+      "message": "HTTP 5xx spiked",
+      "tags": ["alert"],
+      "correlation_id": "corr-1",
+      "raw": {"labels": {"alertname": "HighErrorRate"}, "status": "firing"}
+    },
+    {
+      "id": "zabbix-0000",
+      "timestamp": "2025-11-19T08:12:25+00:00",
+      "source": "zabbix",
+      "host": "db-1",
+      "service": null,
+      "severity": "error",
+      "category": "alert",
+      "message": "DB latency high",
+      "tags": ["alert"],
+      "correlation_id": null,
+      "raw": {"status": "PROBLEM"}
+    }
+  ],
+  "metadata": {"services": ["frontend", "db"], "primary_source": "nginx"}
+}

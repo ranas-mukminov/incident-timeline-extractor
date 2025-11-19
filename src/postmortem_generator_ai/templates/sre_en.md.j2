@@ -1,0 +1,33 @@
+# {{ pm.title }}
+
+- Incident ID: {{ pm.incident_id }}
+- Date: {{ pm.date.isoformat() }}
+- Severity: {{ pm.severity }}
+
+## Summary
+{{ pm.summary }}
+
+## Impact
+{{ pm.impact }}
+
+## Root Cause
+{{ pm.root_cause }}
+
+## Contributing Factors
+{{ pm.contributing_factors }}
+
+## Timeline
+{{ pm.timeline_md }}
+
+## What Went Well
+{{ pm.what_went_well }}
+
+## What Can Be Improved
+{{ pm.what_can_be_improved }}
+
+## Action Items
+{% for item in pm.action_items %}- [{{ "x" if item.status == "done" else " " }}] {{ item.description }} (owner: {{ item.owner or "tbd" }}, due: {{ item.due_date or "tbd" }})
+{% endfor %}
+
+## Lessons Learned
+{{ pm.lessons_learned }}
