@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterable
 from datetime import datetime
-from typing import Iterable
 
 from incident_timeline_extractor.timeline.model import Event
 
@@ -13,7 +13,9 @@ class LogSource(ABC):
     name: str = "base"
 
     @abstractmethod
-    def collect(self, *, since: datetime | None = None, until: datetime | None = None) -> Iterable[Event]:
+    def collect(
+        self, *, since: datetime | None = None, until: datetime | None = None
+    ) -> Iterable[Event]:
         """Collect events in the given time window."""
 
     def __iter__(self):  # pragma: no cover - helper

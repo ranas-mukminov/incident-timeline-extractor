@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
 
 from incident_timeline_extractor.parsing.zabbix_parser import parse_zabbix_events
 from incident_timeline_extractor.sources.base import LogSource
@@ -23,8 +23,10 @@ class ZabbixSource(LogSource):
                 return json.load(f)
         return None
 
-    def collect(self, *, since: datetime | None = None, until: datetime | None = None) -> Iterable[Event]:
-        events: List[Event] = []
+    def collect(
+        self, *, since: datetime | None = None, until: datetime | None = None
+    ) -> Iterable[Event]:
+        events: list[Event] = []
         payload = self._load_payload()
         parsed_events = parse_zabbix_events(payload)
         for idx, parsed in enumerate(parsed_events):

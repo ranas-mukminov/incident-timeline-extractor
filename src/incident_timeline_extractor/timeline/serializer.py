@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any
 
 from incident_timeline_extractor.timeline.model import Event, Timeline
 
@@ -16,7 +16,7 @@ def _dt_to_str(dt: datetime | None) -> str | None:
 
 
 def to_json(timeline: Timeline) -> str:
-    payload: Dict[str, Any] = {
+    payload: dict[str, Any] = {
         "version": VERSION,
         "incident_id": timeline.incident_id,
         "started_at": _dt_to_str(timeline.started_at),
@@ -48,7 +48,7 @@ def _parse_dt(value: str | None) -> datetime | None:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def from_json(data: str | Dict[str, Any]) -> Timeline:
+def from_json(data: str | dict[str, Any]) -> Timeline:
     if isinstance(data, str):
         payload = json.loads(data)
     else:
