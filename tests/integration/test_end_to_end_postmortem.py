@@ -7,7 +7,8 @@ from postmortem_generator_ai.renderer import render_markdown
 
 
 def test_end_to_end_postmortem(tmp_path: Path):
-    timeline = from_json(Path("examples/timelines/example_timeline.json").read_text(encoding="utf-8"))
+    timeline_path = Path("examples/timelines/example_timeline.json")
+    timeline = from_json(timeline_path.read_text(encoding="utf-8"))
     pm = generate_postmortem(timeline, "Synthetic outage", MockProvider())
     md = render_markdown(pm, language="en")
     output = tmp_path / "postmortem.md"

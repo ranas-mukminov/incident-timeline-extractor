@@ -16,7 +16,13 @@ def test_timeline_json_roundtrip():
         tags=["http_5xx"],
         correlation_id="corr-1",
     )
-    timeline = Timeline("INC-1", event.timestamp, event.timestamp, [event], metadata={"services": ["frontend"]})
+    timeline = Timeline(
+        "INC-1",
+        event.timestamp,
+        event.timestamp,
+        [event],
+        metadata={"services": ["frontend"]},
+    )
     data = to_json(timeline)
     restored = from_json(data)
     assert restored.incident_id == "INC-1"

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
 
 from incident_timeline_extractor.parsing.syslog_parser import parse_syslog_line
 from incident_timeline_extractor.sources.base import LogSource
@@ -23,8 +23,10 @@ class SyslogSource(LogSource):
             with path.open("r", encoding="utf-8") as f:
                 yield from f
 
-    def collect(self, *, since: datetime | None = None, until: datetime | None = None) -> Iterable[Event]:
-        events: List[Event] = []
+    def collect(
+        self, *, since: datetime | None = None, until: datetime | None = None
+    ) -> Iterable[Event]:
+        events: list[Event] = []
         idx = 0
         for line in self._read_lines():
             parsed = parse_syslog_line(line)

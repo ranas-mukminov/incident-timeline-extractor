@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 import urllib.request
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
 
 from incident_timeline_extractor.parsing.prometheus_parser import parse_alertmanager
 from incident_timeline_extractor.sources.base import LogSource
@@ -27,9 +27,11 @@ class PrometheusSource(LogSource):
                 return json.load(resp)
         return None
 
-    def collect(self, *, since: datetime | None = None, until: datetime | None = None) -> Iterable[Event]:
+    def collect(
+        self, *, since: datetime | None = None, until: datetime | None = None
+    ) -> Iterable[Event]:
         payload = self._load_payload()
-        events: List[Event] = []
+        events: list[Event] = []
         for idx, parsed in enumerate(parse_alertmanager(payload)):
             event = Event(
                 id=f"prometheus-{idx:04d}",

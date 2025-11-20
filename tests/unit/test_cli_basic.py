@@ -15,6 +15,8 @@ def test_to_markdown_command():
 
 def test_analyze_command(tmp_path: Path):
     output = tmp_path / "annotated.json"
-    result = runner.invoke(app, ["analyze", "examples/timelines/example_timeline.json", "--output", str(output)])
+    result = runner.invoke(
+        app, ["analyze", "examples/timelines/example_timeline.json", "--output", str(output)]
+    )
     assert result.exit_code == 0
     assert output.exists()

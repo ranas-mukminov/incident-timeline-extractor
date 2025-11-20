@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
-from typing import List, Optional
 
 
 @dataclass
 class ActionItem:
     description: str
-    owner: Optional[str] = None
-    due_date: Optional[date] = None
+    owner: str | None = None
+    due_date: date | None = None
     status: str = "open"  # open, in_progress, done
 
 
@@ -26,7 +25,7 @@ class Postmortem:
     timeline_md: str
     what_went_well: str
     what_can_be_improved: str
-    action_items: List[ActionItem] = field(default_factory=list)
+    action_items: list[ActionItem] = field(default_factory=list)
     lessons_learned: str = ""
 
 

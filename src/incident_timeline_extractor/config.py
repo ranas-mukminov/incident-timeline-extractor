@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import yaml
 
@@ -11,14 +11,14 @@ import yaml
 class JournaldConfig:
     enabled: bool = False
     units: list[str] = field(default_factory=list)
-    file: Optional[Path] = None
+    file: Path | None = None
 
 
 @dataclass
 class NginxConfig:
     enabled: bool = False
-    access_log: Optional[Path] = None
-    error_log: Optional[Path] = None
+    access_log: Path | None = None
+    error_log: Path | None = None
     log_format: str | None = None
 
 
@@ -32,15 +32,15 @@ class SyslogConfig:
 class ZabbixConfig:
     enabled: bool = False
     mode: str = "file"
-    file: Optional[Path] = None
-    api_url: Optional[str] = None
+    file: Path | None = None
+    api_url: str | None = None
 
 
 @dataclass
 class PrometheusConfig:
     enabled: bool = False
-    file: Optional[Path] = None
-    url: Optional[str] = None
+    file: Path | None = None
+    url: str | None = None
 
 
 @dataclass
@@ -61,7 +61,7 @@ class ExtractorConfig:
 @dataclass
 class AIConfig:
     provider: str = "mock"
-    model: Optional[str] = None
+    model: str | None = None
 
 
 @dataclass
@@ -70,7 +70,7 @@ class Config:
     ai: AIConfig = field(default_factory=AIConfig)
 
 
-def _as_path(value: Any) -> Optional[Path]:
+def _as_path(value: Any) -> Path | None:
     if value is None:
         return None
     return Path(str(value))
@@ -97,7 +97,7 @@ def _load_sources(data: dict[str, Any]) -> SourcesConfig:
         ),
         syslog=SyslogConfig(
             enabled=bool(syslog_cfg.get("enabled", False)),
-            files=[_as_path(f) for f in syslog_cfg.get("files", [])],
+            files=[p for f in syslog_cfg.get("files", []) if (p := _as_path(f)) is not None],
         ),
         zabbix=ZabbixConfig(
             enabled=bool(zabbix_cfg.get("enabled", False)),

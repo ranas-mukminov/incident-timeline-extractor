@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import json
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Literal
 
 import typer
 from rich.console import Console
@@ -12,6 +11,7 @@ from ai_providers.mock_provider import MockProvider
 from incident_timeline_extractor.ai.clustering import cluster_events
 from incident_timeline_extractor.ai.tagging import tag_events
 from incident_timeline_extractor.config import Config, load_config
+from incident_timeline_extractor.sources.base import LogSource
 from incident_timeline_extractor.sources.journald import JournaldSource
 from incident_timeline_extractor.sources.nginx import NginxSource
 from incident_timeline_extractor.sources.prometheus import PrometheusSource
@@ -20,25 +20,24 @@ from incident_timeline_extractor.sources.zabbix import ZabbixSource
 from incident_timeline_extractor.timeline.builder import build_timeline
 from incident_timeline_extractor.timeline.serializer import (
     from_json,
-    timeline_to_ascii,
     timeline_to_markdown,
     to_json,
 )
 from postmortem_generator_ai.generator import generate_postmortem
-from postmortem_generator_ai.renderer import render_markdown
 from postmortem_generator_ai.pdf_export import markdown_to_pdf
+from postmortem_generator_ai.renderer import render_markdown
 
 app = typer.Typer(help="Incident timeline extractor")
 console = Console()
 
 
-def _parse_dt(value: Optional[str]) -> Optional[datetime]:
+def _parse_dt(value: str | None) -> datetime | None:
     if value is None:
         return None
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def _load_config(path: Optional[Path]) -> Config:
+def _load_config(path: Path | None) -> Config:
     if not path:
         # minimal default config
         return Config()
@@ -47,7 +46,7 @@ def _load_config(path: Optional[Path]) -> Config:
 
 def _enabled_sources(cfg: Config):
     sources = cfg.incident_timeline_extractor.sources
-    instances = []
+    instances: list[LogSource] = []
     if sources.journald.enabled:
         instances.append(JournaldSource(units=sources.journald.units, file=sources.journald.file))
     if sources.nginx.enabled:
@@ -69,10 +68,10 @@ def _enabled_sources(cfg: Config):
 @app.command()
 def collect(
     incident_id: str = typer.Option(..., help="Incident identifier"),
-    config: Optional[Path] = typer.Option(None, exists=True, help="Path to config.yaml"),
-    since: Optional[str] = typer.Option(None, help="Start time ISO8601"),
-    until: Optional[str] = typer.Option(None, help="End time ISO8601"),
-    output: Optional[Path] = typer.Option(None, help="Where to write JSON timeline"),
+    config: Path | None = typer.Option(None, exists=True, help="Path to config.yaml"),
+    since: str | None = typer.Option(None, help="Start time ISO8601"),
+    until: str | None = typer.Option(None, help="End time ISO8601"),
+    output: Path | None = typer.Option(None, help="Where to write JSON timeline"),
 ):
     """Collect events from configured sources and emit a JSON timeline."""
 
@@ -108,7 +107,7 @@ def to_markdown(
 @app.command()
 def analyze(
     timeline_path: Path = typer.Argument(..., exists=True, help="Timeline JSON"),
-    output: Optional[Path] = typer.Option(None, help="Annotated JSON output"),
+    output: Path | None = typer.Option(None, help="Annotated JSON output"),
 ):
     """Run AI tagging and clustering on a timeline using the mock provider by default."""
 
@@ -131,15 +130,16 @@ def postmortem(
     timeline_path: Path = typer.Option(..., exists=True, help="Timeline JSON"),
     engineer_input: str = typer.Option("", "--input", help="Short engineer description"),
     lang: str = typer.Option("en", help="Language: en or ru"),
-    output: Optional[Path] = typer.Option(None, help="Where to write postmortem Markdown"),
-    pdf: Optional[Path] = typer.Option(None, help="Optional PDF output path"),
+    output: Path | None = typer.Option(None, help="Where to write postmortem Markdown"),
+    pdf: Path | None = typer.Option(None, help="Optional PDF output path"),
 ):
     """Generate a postmortem from a timeline using the mock AI provider."""
 
     timeline = from_json(timeline_path.read_text(encoding="utf-8"))
     provider = MockProvider()
     pm = generate_postmortem(timeline, engineer_input, provider, language=lang)
-    markdown = render_markdown(pm, language=lang)
+    lang_literal: Literal["en", "ru"] = "en" if lang == "en" else "ru"
+    markdown = render_markdown(pm, language=lang_literal)
     if output:
         output.write_text(markdown, encoding="utf-8")
         console.print(f"Postmortem saved to {output}")
@@ -151,7 +151,7 @@ def postmortem(
 
 
 @app.command()
-def doctor(config: Optional[Path] = typer.Option(None, help="Config path")):
+def doctor(config: Path | None = typer.Option(None, help="Config path")):
     """Basic sanity checks for configured sources."""
 
     cfg = _load_config(config)

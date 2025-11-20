@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
 
 SEVERITY_MAP = {
     "critical": "critical",
@@ -21,22 +21,27 @@ def _parse_time(value: str | None) -> datetime | None:
         return None
 
 
-def parse_alertmanager(payload: Any) -> List[Dict[str, Any]]:
+def parse_alertmanager(payload: Any) -> list[dict[str, Any]]:
     if payload is None:
         return []
-    alerts = []
+    alerts: list[Any] = []
     if isinstance(payload, dict):
         alerts = payload.get("alerts") or []
     elif isinstance(payload, list):
         alerts = payload
-    result: List[Dict[str, Any]] = []
+    result: list[dict[str, Any]] = []
     for alert in alerts:
         labels = alert.get("labels", {})
         annotations = alert.get("annotations", {})
         status = alert.get("status", "firing")
         severity = SEVERITY_MAP.get(labels.get("severity", "info").lower(), "info")
         ts = _parse_time(alert.get("startsAt")) or datetime.now(timezone.utc)
-        message = annotations.get("summary") or annotations.get("description") or labels.get("alertname") or "Prometheus alert"
+        message = (
+            annotations.get("summary")
+            or annotations.get("description")
+            or labels.get("alertname")
+            or "Prometheus alert"
+        )
         metadata = {
             "labels": labels,
             "annotations": annotations,

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterable, List
+from typing import Any
 
 SEVERITY_MAP = {
     0: "info",
@@ -13,7 +14,7 @@ SEVERITY_MAP = {
 }
 
 
-def parse_zabbix_events(payload: Any) -> List[Dict[str, Any]]:
+def parse_zabbix_events(payload: Any) -> list[dict[str, Any]]:
     """Parse Zabbix event JSON payload into normalized dicts."""
 
     if payload is None:
@@ -26,7 +27,7 @@ def parse_zabbix_events(payload: Any) -> List[Dict[str, Any]]:
     else:
         return []
 
-    normalized: List[Dict[str, Any]] = []
+    normalized: list[dict[str, Any]] = []
     for idx, event in enumerate(events):
         clock = event.get("clock") or event.get("timestamp") or event.get("event_time")
         try:

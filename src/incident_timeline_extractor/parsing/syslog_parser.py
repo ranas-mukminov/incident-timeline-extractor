@@ -3,10 +3,11 @@ from __future__ import annotations
 import calendar
 import re
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any
 
 SYSLOG_REGEX = re.compile(
-    r"(?P<month>[A-Za-z]{3})\s+(?P<day>\d{1,2}) (?P<time>\d{2}:\d{2}:\d{2}) (?P<host>[\w.-]+) (?P<app>[^:]+): (?P<message>.*)"
+    r"(?P<month>[A-Za-z]{3})\s+(?P<day>\d{1,2}) (?P<time>\d{2}:\d{2}:\d{2}) "
+    r"(?P<host>[\w.-]+) (?P<app>[^:]+): (?P<message>.*)"
 )
 
 KEYWORD_SEVERITY = {
@@ -23,7 +24,7 @@ def _month_to_number(month: str) -> int:
     return list(calendar.month_abbr).index(month)
 
 
-def parse_syslog_line(line: str, now: datetime | None = None) -> Optional[Dict[str, Any]]:
+def parse_syslog_line(line: str, now: datetime | None = None) -> dict[str, Any] | None:
     match = SYSLOG_REGEX.match(line.strip())
     if not match:
         return None
@@ -41,7 +42,7 @@ def parse_syslog_line(line: str, now: datetime | None = None) -> Optional[Dict[s
             severity = sev
             break
 
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "host": data.get("host"),
         "app": data.get("app"),
     }

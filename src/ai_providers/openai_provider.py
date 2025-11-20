@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List
+from typing import Any
+
+from incident_timeline_extractor.timeline.model import Event
 
 from .base import AIProvider
-from incident_timeline_extractor.timeline.model import Event
 
 try:  # pragma: no cover - optional dependency
     from openai import OpenAI
@@ -21,14 +22,14 @@ class OpenAIProvider(AIProvider):
         if OpenAI and os.environ.get("OPENAI_API_KEY"):
             self.client = OpenAI()
 
-    def tag_events(self, events: List[Event]) -> List[List[str]]:
+    def tag_events(self, events: list[Event]) -> list[list[str]]:
         # Lightweight deterministic fallback to avoid network calls in tests
         return [["llm-tagged"] for _ in events]
 
-    def cluster_events(self, events: List[Event]) -> List[Dict[str, Any]]:
+    def cluster_events(self, events: list[Event]) -> list[dict[str, Any]]:
         return []
 
-    def generate_postmortem(self, prompt: str, language: str = "en") -> Dict[str, Any]:
+    def generate_postmortem(self, prompt: str, language: str = "en") -> dict[str, Any]:
         if not self.client:
             # Safe fallback mirroring mock provider to avoid unexpected failures
             from .mock_provider import MockProvider
@@ -37,7 +38,10 @@ class OpenAIProvider(AIProvider):
 
         response = self.client.chat.completions.create(
             model=self.model,
-            messages=[{"role": "system", "content": "You are an SRE postmortem generator."}, {"role": "user", "content": prompt}],
+            messages=[
+                {"role": "system", "content": "You are an SRE postmortem generator."},
+                {"role": "user", "content": prompt},
+            ],
         )
         content = response.choices[0].message.content if response.choices else ""
         return {

@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import Optional
 
 from ai_providers.base import AIProvider
-from incident_timeline_extractor.timeline.serializer import timeline_to_markdown
 from incident_timeline_extractor.timeline.model import Timeline
+from incident_timeline_extractor.timeline.serializer import timeline_to_markdown
 from postmortem_generator_ai.model import ActionItem, Postmortem
 
 
@@ -22,7 +21,12 @@ def _fallback_postmortem(timeline: Timeline, engineer_input: str, language: str)
         "what_can_be_improved": "Automate remediation and alert routing.",
         "lessons_learned": "Keep timelines consistent.",
         "action_items": [
-            {"description": "Add detailed runbooks", "owner": "team", "due_date": None, "status": "open"}
+            {
+                "description": "Add detailed runbooks",
+                "owner": "team",
+                "due_date": None,
+                "status": "open",
+            }
         ],
     }
 
@@ -30,7 +34,7 @@ def _fallback_postmortem(timeline: Timeline, engineer_input: str, language: str)
 def generate_postmortem(
     timeline: Timeline,
     engineer_input: str,
-    provider: Optional[AIProvider],
+    provider: AIProvider | None,
     language: str = "en",
 ) -> Postmortem:
     timeline_md = timeline_to_markdown(timeline)
@@ -53,7 +57,12 @@ def generate_postmortem(
 
     if not data.get("action_items"):
         data["action_items"] = [
-            {"description": "Review monitoring gaps", "owner": "sre", "due_date": None, "status": "open"}
+            {
+                "description": "Review monitoring gaps",
+                "owner": "sre",
+                "due_date": None,
+                "status": "open",
+            }
         ]
 
     action_items = [

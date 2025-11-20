@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import re
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional
+from typing import Any
 
 JOURNALD_REGEX = re.compile(
-    r"(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})) (?P<unit>[\w\-.@]+)\[(?P<pid>\d+)\]: (?P<message>.*)"
+    r"(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})) "
+    r"(?P<unit>[\w\-.@]+)\[(?P<pid>\d+)\]: (?P<message>.*)"
 )
 
 LEVEL_KEYWORDS = {
@@ -17,7 +18,7 @@ LEVEL_KEYWORDS = {
 }
 
 
-def parse_journald_line(line: str) -> Optional[Dict[str, Any]]:
+def parse_journald_line(line: str) -> dict[str, Any] | None:
     match = JOURNALD_REGEX.match(line.strip())
     if not match:
         return None
@@ -31,7 +32,7 @@ def parse_journald_line(line: str) -> Optional[Dict[str, Any]]:
             severity = sev
             break
 
-    metadata: Dict[str, Any] = {
+    metadata: dict[str, Any] = {
         "unit": data.get("unit"),
         "pid": data.get("pid"),
     }

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import subprocess
+from collections.abc import Iterable
 from datetime import datetime
 from pathlib import Path
-from typing import Iterable, List
 
 from incident_timeline_extractor.parsing.journald_parser import parse_journald_line
 from incident_timeline_extractor.sources.base import LogSource
@@ -32,13 +32,14 @@ class JournaldSource(LogSource):
             cmd.extend(["-u", unit])
         try:
             proc = subprocess.run(cmd, capture_output=True, check=True, text=True)
-            for line in proc.stdout.splitlines():
-                yield line
+            yield from proc.stdout.splitlines()
         except Exception:
             return
 
-    def collect(self, *, since: datetime | None = None, until: datetime | None = None) -> Iterable[Event]:
-        events: List[Event] = []
+    def collect(
+        self, *, since: datetime | None = None, until: datetime | None = None
+    ) -> Iterable[Event]:
+        events: list[Event] = []
         idx = 0
         for line in self._read_lines(since, until):
             parsed = parse_journald_line(line)

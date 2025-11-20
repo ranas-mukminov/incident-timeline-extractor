@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-from typing import List
-
 from ai_providers.base import AIProvider
 from incident_timeline_extractor.timeline.model import Event
-
 
 KEYWORD_TAGS = {
     "timeout": "network_timeout",
@@ -16,8 +13,8 @@ KEYWORD_TAGS = {
 }
 
 
-def _heuristic_tags(event: Event) -> List[str]:
-    tags: List[str] = []
+def _heuristic_tags(event: Event) -> list[str]:
+    tags: list[str] = []
     msg_lower = event.message.lower()
     for keyword, tag in KEYWORD_TAGS.items():
         if keyword in msg_lower:
@@ -27,8 +24,8 @@ def _heuristic_tags(event: Event) -> List[str]:
     return tags
 
 
-def tag_events(events: List[Event], provider: AIProvider | None) -> List[Event]:
-    provider_tags: List[List[str]] = []
+def tag_events(events: list[Event], provider: AIProvider | None) -> list[Event]:
+    provider_tags: list[list[str]] = []
     if provider:
         try:
             provider_tags = provider.tag_events(events)
@@ -42,7 +39,7 @@ def tag_events(events: List[Event], provider: AIProvider | None) -> List[Event]:
         existing.extend(_heuristic_tags(event))
         # deduplicate while preserving order
         seen = set()
-        deduped: List[str] = []
+        deduped: list[str] = []
         for tag in existing:
             if tag in seen:
                 continue

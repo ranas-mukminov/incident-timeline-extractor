@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -10,22 +10,22 @@ class Event:
     id: str
     timestamp: datetime
     source: str
-    host: Optional[str] = None
-    service: Optional[str] = None
+    host: str | None = None
+    service: str | None = None
     severity: str = "info"
-    category: Optional[str] = None
+    category: str | None = None
     message: str = ""
     raw: dict[str, Any] = field(default_factory=dict)
-    tags: List[str] = field(default_factory=list)
-    correlation_id: Optional[str] = None
+    tags: list[str] = field(default_factory=list)
+    correlation_id: str | None = None
 
 
 @dataclass
 class Timeline:
     incident_id: str
-    started_at: Optional[datetime]
-    ended_at: Optional[datetime]
-    events: List[Event] = field(default_factory=list)
+    started_at: datetime | None
+    ended_at: datetime | None
+    events: list[Event] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
