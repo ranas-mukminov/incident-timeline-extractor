@@ -1,15 +1,14 @@
 from __future__ import annotations
 
+import logging
 import subprocess  # nosec B404
 from collections.abc import Iterable
 from datetime import datetime
-import logging
 from pathlib import Path
 
 from incident_timeline_extractor.parsing.journald_parser import parse_journald_line
 from incident_timeline_extractor.sources.base import LogSource
 from incident_timeline_extractor.timeline.model import Event
-
 
 logger = logging.getLogger(__name__)
 
