@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from datetime import datetime, timezone
+import logging
 from typing import Any
 
 SEVERITY_MAP = {
@@ -12,6 +13,9 @@ SEVERITY_MAP = {
     4: "critical",
     5: "critical",
 }
+
+
+logger = logging.getLogger(__name__)
 
 
 def parse_zabbix_events(payload: Any) -> list[dict[str, Any]]:
@@ -32,7 +36,8 @@ def parse_zabbix_events(payload: Any) -> list[dict[str, Any]]:
         clock = event.get("clock") or event.get("timestamp") or event.get("event_time")
         try:
             ts = datetime.fromtimestamp(int(clock), tz=timezone.utc)
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to parse Zabbix event timestamp: %s", e)
             continue
         severity = SEVERITY_MAP.get(int(event.get("severity", 1)), "info")
         name = event.get("name") or event.get("event") or "Zabbix event"

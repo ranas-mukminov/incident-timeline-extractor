@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 
 from ai_providers.base import AIProvider
 from incident_timeline_extractor.timeline.model import Event
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -43,8 +47,8 @@ def cluster_events(events: list[Event], provider: AIProvider | None) -> list[Eve
                     )
                     for item in raw
                 ]
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning("Failed to cluster events: %s", e)
     return _fallback_clusters(events)
 
 

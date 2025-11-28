@@ -1,13 +1,17 @@
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404
 from collections.abc import Iterable
 from datetime import datetime
+import logging
 from pathlib import Path
 
 from incident_timeline_extractor.parsing.journald_parser import parse_journald_line
 from incident_timeline_extractor.sources.base import LogSource
 from incident_timeline_extractor.timeline.model import Event
+
+
+logger = logging.getLogger(__name__)
 
 
 class JournaldSource(LogSource):
@@ -31,9 +35,10 @@ class JournaldSource(LogSource):
         for unit in self.units:
             cmd.extend(["-u", unit])
         try:
-            proc = subprocess.run(cmd, capture_output=True, check=True, text=True)
+            proc = subprocess.run(cmd, capture_output=True, check=True, text=True)  # nosec B603
             yield from proc.stdout.splitlines()
-        except Exception:
+        except Exception as e:
+            logger.error("Failed to run journalctl: %s", e)
             return
 
     def collect(

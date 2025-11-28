@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+import logging
 from pathlib import Path
 from typing import Literal
 
@@ -175,6 +176,7 @@ def doctor(config: Path | None = typer.Option(None, help="Config path")):
 
 
 def main():  # pragma: no cover - entrypoint
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     app()
 
 
